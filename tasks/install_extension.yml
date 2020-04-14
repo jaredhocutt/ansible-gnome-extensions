@@ -2,7 +2,7 @@
 
 - name: Check if Gnome Shell extension is already installed - {{ gnome_extension_info.name }}
   stat:
-    path: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}"
+    path: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}/metadata.json"
   register: r_gnome_extensions_check_existing
 
 - name: Create temporary download directory
