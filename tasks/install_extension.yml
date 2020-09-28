@@ -1,8 +1,13 @@
 ---
 
+# there is no ansible_effective_user_dir
+- name: set $HOME
+  set_fact:
+    r_gnome_extensions_home: "{{ lookup('env', 'HOME') }}"
+
 - name: Check if Gnome Shell extension is already installed - {{ gnome_extension_info.name }}
   stat:
-    path: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}/metadata.json"
+    path: "{{ r_gnome_extensions_home }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}/metadata.json"
   register: r_gnome_extensions_check_existing
 
 - name: Create temporary download directory
@@ -22,16 +27,14 @@
 
     - name: Create install directory - {{ gnome_extension_info.name }}
       file:
-        path: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}"
+        path: "{{ r_gnome_extensions_home }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}"
         state: directory
-        owner: "{{ ansible_user_uid }}"
-        group: "{{ ansible_user_gid }}"
         mode: 0775
 
     - name: Install Gnome Shell extension - {{ gnome_extension_info.name }}
       unarchive:
         src: "{{ r_gnome_extension_download.dest }}"
-        dest: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}"
+        dest: "{{ r_gnome_extensions_home }}/.local/share/gnome-shell/extensions/{{ gnome_extension_info.uuid }}"
         remote_src: yes
 
     - name: Enable Gnome Shell extension - {{ gnome_extension_info.name }}
