@@ -15,8 +15,10 @@
     return_content: yes
   loop: "{{ gnome_extension_ids }}"
   register: r_gnome_extension_info
+  ignore_errors: yes
 
 - include_tasks: install_extension.yml
   vars:
     gnome_extension_info: "{{ item.json }}"
   loop: "{{ r_gnome_extension_info.results }}"
+  when: item.status == 200
